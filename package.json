@@ -1,0 +1,19 @@
+{
+  "name": "html-rapid-prototype",
+  "version": "1.0.0",
+  "description": "Template system for static html files to make prototype iterations fast and easy",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "html",
+    "template",
+    "static",
+    "include",
+    "prototype",
+    "design"
+  ],
+  "author": "Amo DelBello",
+  "license": "MIT"
+}
