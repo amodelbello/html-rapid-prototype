@@ -1,4 +1,4 @@
-const cli = require('./cli');
+const cli = require('./helpers/cli');
 const init_task = require('./tasks/init');
 const build_task = require('./tasks/build');
 const generate_task = require('./tasks/generate');
