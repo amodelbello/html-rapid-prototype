@@ -10,15 +10,27 @@ exports.generateBaseScaffold = () => {
     fh.fileDoesNotExist('dist'),
     fh.fileDoesNotExist('config.json'),
   ])
-  // create directories and files
+  // Create directories and files
   .then(() => fh.createFile(`config.json`, boilerplate.config))
   .then(() => fh.createDirectory(config.source_dir))
-  .then(() => fh.createDirectory('src/layouts'))
+
+  // Create layout file
+  .then(() => fh.createDirectory(config.layouts_dir))
   .then(() => fh.createFile(`${config.layouts_dir}/layout.html`, boilerplate.layout))
+
+  // Create partial files
   .then(() => fh.createDirectory(config.partials_dir))
   .then(() => fh.createFile(`${config.partials_dir}/header.html`, boilerplate.header))
   .then(() => fh.createFile(`${config.partials_dir}/footer.html`, boilerplate.footer))
   .then(() => fh.createFile(`${config.source_dir}/index.html`, boilerplate.index))
+
+  // Create css and js files
+  .then(() => fh.createDirectory(`${config.source_dir}/css`))
+  .then(() => fh.createFile(`${config.source_dir}/css/style.css`, ''))
+  .then(() => fh.createDirectory(`${config.source_dir}/js`))
+  .then(() => fh.createFile(`${config.source_dir}/js/script.js`, ''))
+
+  // TODO: Run the build task here
   .then(() => fh.createDirectory(config.destination_dir))
   .then(() => fh.createFile(`${config.destination_dir}/index.html`, 
     boilerplate.layout +
@@ -33,10 +45,14 @@ exports.generateBaseScaffold = () => {
     src/
       index.html
       layouts/
-        _layout.html
+        layout.html
       partials/
-        _header.html
-        _footer.html
+        header.html
+        footer.html
+      css/
+        style.css
+      js/
+        script.css
     dist/
       index.html
     `);
