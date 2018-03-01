@@ -1,6 +1,6 @@
 const fh = require('../helpers/file');
 const bh = require('../helpers/build');
-const config = require('../config/config').config;
+const config = require('../config/config');
 
 
 function buildFile(file) {

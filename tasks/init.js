@@ -1,5 +1,5 @@
 const boilerplate = require('../config/boilerplate_content');
-const config = require('../config/config').config;
+const config = require('../config/config');
 const fh = require('../helpers/file');
 const build = require('./build');
 
