@@ -1,12 +1,14 @@
-const fh = require('./lib/file_handling');
 const cli = require('./lib/cli');
+const fp = require('./lib/file_processing');
 
 
 if (cli.arguments.init) {
-
-  fh.generateBaseScaffold();
+  fp.generateBaseScaffold();
 }
 
+if (cli.arguments.build) {
+  fp.build();
+}
 
 
 console.log("This is the beginning...");
