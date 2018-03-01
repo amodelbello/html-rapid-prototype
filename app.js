@@ -1,13 +1,15 @@
-const cli = require('./lib/cli');
-const fp = require('./lib/file_processing');
+const cli = require('./cli');
+const init_task = require('./tasks/init');
+const build_task = require('./tasks/build');
+const generate_task = require('./tasks/generate');
 
 
 if (cli.arguments.init) {
-  fp.generateBaseScaffold();
+  init_task.generateBaseScaffold();
 }
 
 if (cli.arguments.build) {
-  fp.build();
+  build_task.build();
 }
 
 

@@ -132,7 +132,7 @@ exports.async = (generator) => {
     if (iteratorValue instanceof Promise) {
       iteratorValue
         .then(res => handle(iterator.next(res)))
-        .catch(err => iterator.throw(err));
+        .catch(e => iterator.throw(e));
     }
   }
 
