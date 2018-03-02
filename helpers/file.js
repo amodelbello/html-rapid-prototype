@@ -74,6 +74,40 @@ exports.getDirectoryContents = (path) => {
   });
 }
 
+// Get the contents of the files within a directory
+exports.getDirectoryFilesContents = (path) => {
+  return new Promise((resolve, reject) => {
+    exports.getDirectoryFiles(path)
+    .then((files) => {
+      return new Promise((resolve, reject) => {
+        let filesContents = [];
+        exports.async(function*() {
+          try {
+            for (let file of files) {
+              let content = yield exports.getFileContents(`${path}/${file}`);
+              let item = {
+                file: `${path}/${file}`,
+                content: content
+              };
+              filesContents.push(item);
+            }
+            resolve(filesContents);
+          }
+          catch(error) {
+            reject(`Unable to get contents of files from ${path}: ${error}`);
+          }
+        });
+      });
+    })
+    .then((filesContents) => {
+      return resolve(filesContents);
+    })
+    .catch(e => {
+      reject(`Unable to get directory files contents from ${path}: ${e}`);
+    });
+  });
+}
+
 // TODO: study this, can it be simplified?
 exports.getDirectoryFiles = (path) => {
   return new Promise((resolve, reject) => {
@@ -107,13 +141,9 @@ exports.getDirectoryFiles = (path) => {
 }
 
 exports.getFileContents = (path) => {
-  // console.log(`Creating ${path}`);
   return new Promise((resolve, reject) => {
     fs.readFile(path, (err, data) => {
       if (err || data == undefined) reject(err);
-
-      console.log(data.toString());
-
       resolve(data.toString());
     });
   });

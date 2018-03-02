@@ -2,10 +2,10 @@
 exports.config = `{
   "title": "Website Title",
   "stylesheets": [
-    "style.css"
+    "css/style.css"
   ],
   "javascripts": [
-    "script.js"
+    "js/script.js"
   ]
 }`;
 
