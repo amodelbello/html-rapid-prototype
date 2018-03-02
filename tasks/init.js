@@ -1,3 +1,4 @@
+const logger = require('tracer').colorConsole();
 const boilerplate = require('../config/boilerplate_content');
 const config = require('../config/config');
 const fh = require('../helpers/file');
@@ -58,6 +59,7 @@ exports.generateBaseScaffold = () => {
     `);
   })
   .catch(e => {
+    logger.error();
     console.log(`Problem generating base scaffold: ${e}`);
   });
 };

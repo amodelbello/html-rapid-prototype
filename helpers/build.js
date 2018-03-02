@@ -1,3 +1,4 @@
+const logger = require('tracer').colorConsole();
 const fh = require('../helpers/file');
 const config = require('../config/config');
 
@@ -88,6 +89,7 @@ exports.buildContent = (file) => {
         return resolve(content);
       }
       catch(e) {
+        logger.error();
         reject(`Unable: ${e}`);
       }
     });

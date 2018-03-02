@@ -1,3 +1,4 @@
+const logger = require('tracer').colorConsole();
 const fh = require('../helpers/file');
 const bh = require('../helpers/build');
 const config = require('../config/config');
@@ -15,11 +16,15 @@ exports.build = () => {
 
           for (let file of files) {
             let content = yield bh.buildContent(file);
-            console.log(content);
+            // console.log(content);
+
+            // Create dist/*.html files now
+
           }
           console.log(`We're all built!`);
         }
         catch(e) {
+          logger.error();
           reject(`Unable to build ${file}`);
         }
       });
@@ -30,6 +35,7 @@ exports.build = () => {
   })
 
   .catch(e => {
+    logger.error();
     console.log(`Problem building: ${e}`);
   });
 };

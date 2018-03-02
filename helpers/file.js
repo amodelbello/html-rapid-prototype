@@ -1,3 +1,4 @@
+const logger = require('tracer').colorConsole();
 const fs = require('fs');
 
 exports.fileExists = (path) => {
@@ -90,6 +91,7 @@ exports.getDirectoryFilesContents = (path) => {
             resolve(filesContents);
           }
           catch(error) {
+            logger.error();
             reject(`Unable to get contents of files from ${path}: ${error}`);
           }
         });
@@ -99,6 +101,7 @@ exports.getDirectoryFilesContents = (path) => {
       return resolve(filesContents);
     })
     .catch(e => {
+      logger.error();
       reject(`Unable to get directory files contents from ${path}: ${e}`);
     });
   });
@@ -122,6 +125,7 @@ exports.getDirectoryFiles = (path) => {
             resolve(files);
           }
           catch(error) {
+            logger.error();
             reject(`Unable to get files from ${path}: ${error}`);
           }
         });
@@ -131,6 +135,7 @@ exports.getDirectoryFiles = (path) => {
       return resolve(files);
     })
     .catch(e => {
+      logger.error();
       reject(`Unable to get directory files from ${path}: ${e}`);
     });
   });
@@ -158,12 +163,18 @@ exports.async = (generator) => {
     if (iteratorValue instanceof Promise) {
       iteratorValue
         .then(res => handle(iterator.next(res)))
-        .catch(e => iterator.throw(e));
+        .catch(e => {
+          logger.error();
+          iterator.throw(e)
+        });
     }
   }
 
   try {
     handle(iterator.next());
   }
-  catch (e) { iterator.throw(e); }
+  catch (e) { 
+    logger.error();
+    iterator.throw(e); 
+  }
 }
