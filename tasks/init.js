@@ -2,7 +2,7 @@ const logger = require('tracer').colorConsole();
 const boilerplate = require('../config/boilerplate_content');
 const config = require('../config/config');
 const fh = require('../helpers/file');
-const build = require('./build');
+const build_task = require('../tasks/build');
 
 
 exports.generateBaseScaffold = () => {
@@ -11,6 +11,10 @@ exports.generateBaseScaffold = () => {
     fh.fileDoesNotExist('dist'),
     fh.fileDoesNotExist('config.json'),
   ])
+  .then(() => {
+    console.log(`Initializing new project...`);
+  })
+
   // Create directories and files
   .then(() => fh.createFile(`config.json`, boilerplate.config))
   .then(() => fh.createDirectory(config.source_dir))
@@ -30,33 +34,27 @@ exports.generateBaseScaffold = () => {
   .then(() => fh.createFile(`${config.source_dir}/css/style.css`, ''))
   .then(() => fh.createDirectory(`${config.source_dir}/js`))
   .then(() => fh.createFile(`${config.source_dir}/js/script.js`, ''))
-
-  // TODO: Run the build task here
-  .then(() => fh.createDirectory(config.destination_dir))
-  .then(() => fh.createFile(`${config.destination_dir}/index.html`, 
-    boilerplate.layout +
-    boilerplate.header +
-    boilerplate.footer +
-    boilerplate.index
-  ))
   .then(() => {
     console.log(`
-    Generated basic scaffold:
-    config.json
-    src/
-      index.html
-      layouts/
-        layout.html
-      partials/
-        header.html
-        footer.html
-      css/
-        style.css
-      js/
-        script.css
-    dist/
-      index.html
+Generated basic scaffold:
+config.json
+src/
+  index.html
+  layouts/
+    layout.html
+  partials/
+    header.html
+    footer.html
+  css/
+    style.css
+  js/
+    script.css
     `);
+  })
+
+  // Build files
+  .then(() => {
+    build_task.build();
   })
   .catch(e => {
     logger.error();
