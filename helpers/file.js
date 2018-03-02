@@ -80,16 +80,12 @@ exports.getDirectoryFilesContents = (path) => {
     exports.getDirectoryFiles(path)
     .then((files) => {
       return new Promise((resolve, reject) => {
-        let filesContents = [];
+        let filesContents = new Map();
         exports.async(function*() {
           try {
             for (let file of files) {
               let content = yield exports.getFileContents(`${path}/${file}`);
-              let item = {
-                file: `${path}/${file}`,
-                content: content
-              };
-              filesContents.push(item);
+              filesContents.set(`${path}/${file}`, content);
             }
             resolve(filesContents);
           }

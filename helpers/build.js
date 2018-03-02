@@ -1,6 +1,14 @@
 const fh = require('../helpers/file');
 const config = require('../config/config');
 
+function getFileNameFromVariableName(variableName) {
+  let filename = variableName.replace('{{', '')
+  .replace('}}', '')
+  .trim();
+
+  return filename;
+}
+
 function injectContent(contentObject) {
   return new Promise((resolve, reject) => {
 
@@ -33,7 +41,8 @@ function injectContent(contentObject) {
           break;
 
         default:
-          // Logic for partials goes here
+          let filename = getFileNameFromVariableName(match);
+          return contentObject.partials.get(`${config.source_dir}/${filename}`);
           break;
       }
       return content;
@@ -67,6 +76,8 @@ exports.buildContent = (file) => {
             content: yield fh.getFileContents(`${config.layouts_dir}/layout.html`)
           },
           partials: yield fh.getDirectoryFilesContents(config.partials_dir),
+
+          // FIXME: Change these to maps instead of arrays of objects
           stylesheets: configObj.stylesheets,
           javascripts: configObj.javascripts,
         }

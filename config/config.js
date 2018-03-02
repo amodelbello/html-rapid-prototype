@@ -1,3 +1,4 @@
+// FIXME: Change these propery names to camel case
 module.exports = {
   source_dir: 'src',
   layouts_dir: 'src/layouts',
