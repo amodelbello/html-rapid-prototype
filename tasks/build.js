@@ -32,7 +32,7 @@ exports.build = () => {
         }
       });
 
-      resolve({});
+      resolve();
 
     });
   })

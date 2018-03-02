@@ -5,6 +5,7 @@ const args = {
   'init': in_array('init', argv._),
   'build': in_array('build', argv._),
   'generate': in_array('generate', argv._),
+  'watch': in_array('watch', argv._),
 }
 
 exports.argv = argv;

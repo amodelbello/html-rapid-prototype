@@ -15,4 +15,8 @@ if (cli.arguments.generate) {
   build_task.build();
 }
 
+if (cli.arguments.watch) {
+  const watch_task = require('./tasks/watch');
+}
+
 console.log("This is the beginning...");
