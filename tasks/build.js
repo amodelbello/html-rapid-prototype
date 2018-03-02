@@ -11,17 +11,20 @@ exports.build = () => {
       fh.async(function*() {
         try {
 
-          // Create dist/css/* here
-          // Create dist/js/* here
+          console.log(`Copying css and js files...`);
+          yield fh.deleteDirectoryRecursive(config.destination_dir);
+          yield fh.createDirectory(config.destination_dir);
+
+          yield fh.copyDirectoryRecursive(`${config.source_dir}/css`, config.destination_dir);
+          yield fh.copyDirectoryRecursive(`${config.source_dir}/js`, config.destination_dir);
 
           for (let file of files) {
+            console.log(`Building ${file}`);
             let content = yield bh.buildContent(file);
-            // console.log(content);
-
-            // Create dist/*.html files now
-
+            yield fh.createFile(`${config.destination_dir}/${file}`, content);
           }
-          console.log(`We're all built!`);
+
+          console.log(`Done!`);
         }
         catch(e) {
           logger.error();

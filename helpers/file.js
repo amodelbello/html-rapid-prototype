@@ -4,12 +4,14 @@ const fs = require('fs');
 exports.fileExists = (path) => {
   return new Promise((resolve, reject) => {
     fs.stat(path, (err, stats) => {
-      if (err || stats == undefined) return reject(err);
+      if (err || stats == undefined) return resolve(false);
       return resolve(stats);
     });
   });
 }
 
+// FIXME: Figure out a better way to return. bool? resolve()? what...
+// Do we even need this function?
 exports.fileDoesNotExist = (path) => {
   return new Promise((resolve, reject) => {
     fs.stat(path, (err, stats) => {
@@ -40,6 +42,24 @@ exports.createFile = (path, content) => {
   });
 }
 
+exports.deleteFile = (path) => {
+  return new Promise((resolve, reject) => {
+    fs.unlink(path, (err) => {
+      if (err) return reject(`Something went wrong deleting file: ${path}: ${err}`);
+      return resolve();
+    });
+  });
+}
+
+exports.deleteDirectory = (path) => {
+  return new Promise((resolve, reject) => {
+    fs.rmdir(path, (err) => {
+      if (err) return reject(`Something went wrong deleting directory: ${path}: ${err}`);
+      return resolve();
+    });
+  });
+}
+
 exports.isFile = (path) => {
   return new Promise((resolve, reject) => {
     fs.stat(path, (err, stats) => {
@@ -63,6 +83,22 @@ exports.isDirectory = (path, data = '') => {
         return resolve(false);
       }
     });
+  });
+}
+
+exports.copyFile = (from, to) => {
+  let read = fs.createReadStream(from);
+  let write = fs.createWriteStream(to);
+  return new Promise(function(resolve, reject) {
+    read.on('error', reject);
+    write.on('error', reject);
+    write.on('finish', resolve);
+    read.pipe(write);
+  }).catch((e) => {
+    read.destroy();
+    write.end();
+    logger.error();
+    reject(`Could not copy file: ${e}`);
   });
 }
 
@@ -149,6 +185,76 @@ exports.getFileContents = (path) => {
     });
   });
 }
+
+exports.copyDirectoryRecursive = (directoryPath, destination, force = false) => {
+  return new Promise((resolve, reject) => {
+    exports.async(function*() {
+      try {
+        let directory = directoryPath.split('/').pop();
+        let destinationExists = yield exports.fileExists(`${destination}/${directory}`);
+        if (destinationExists) {
+          if (!force) {
+            reject("Destination directory already exists!")
+          }
+          yield exports.deleteDirectoryRecursive(to);
+        }
+
+        yield exports.createDirectory(`${destination}/${directory}`);
+
+        let contents = yield exports.getDirectoryContents(directoryPath);
+        for (let item of contents) {
+          let isFile = yield exports.isFile(`${directoryPath}/${item}`);
+          if (isFile) {
+            yield exports.createFile(`${destination}/${directory}/${item}`);
+            yield exports.copyFile(`${directoryPath}/${item}`, `${destination}/${directory}/${item}`);
+          } else {
+            yield exports.copyDirectoryRecursive(`${directoryPath}/${item}`, `${destination}/${directory}`);
+          }
+        }
+
+        return resolve();
+      }
+      catch(e) {
+        logger.error();
+        return reject();
+      }
+    });
+  });
+};
+
+exports.deleteDirectoryRecursive = (path) => {
+  return new Promise((resolve, reject) => {
+    exports.async(function*() {
+      try {
+        let exists = yield exports.fileExists(path);
+        if (!exists) {
+          return resolve();
+        }
+        let contents = yield exports.getDirectoryContents(path);
+        for (let item of contents) {
+          let isFile = yield exports.isFile(`${path}/${item}`);
+          if (isFile) {
+            yield exports.deleteFile(`${path}/${item}`);
+          } else {
+            let directoryContents = yield exports.getDirectoryContents(`${path}/${item}`);
+            if (!directoryContents.length) {
+              yield exports.deleteDirectory(`${path}/${item}`);
+            } else {
+              yield exports.deleteDirectoryRecursive(`${path}/${item}`);
+            }
+          }
+        }
+        yield exports.deleteDirectory(`${path}`);
+
+        return resolve();
+      }
+      catch(e) {
+        logger.error();
+        return reject(`Unable to recursively delete contents of directory ${path}: ${e}`);
+      }
+    });
+  });
+};
 
 exports.async = (generator) => {
   var iterator = generator();
