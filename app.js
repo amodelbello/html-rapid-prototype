@@ -2,7 +2,7 @@ const cli = require('./helpers/cli');
 
 if (cli.arguments.init) {
   const init_task = require('./tasks/init');
-  init_task.generateBaseScaffold();
+  init_task.createBaseScaffold();
 }
 
 if (cli.arguments.build) {
@@ -12,7 +12,7 @@ if (cli.arguments.build) {
 
 if (cli.arguments.generate) {
   const generate_task = require('./tasks/generate');
-  // build_task.build();
+  generate_task.generateNewContentFiles();
 }
 
 if (cli.arguments.watch) {

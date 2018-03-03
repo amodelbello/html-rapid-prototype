@@ -30,7 +30,15 @@ if (input[0] !== 'generate' && input.length !== 1) {
 
 if (error) {
   console.log(usage);
-  process.exit;
+  process.exit(1);
+}
+
+// generate command called - get files names to generate
+let filenames = [];
+if (!error && input[0] === 'generate' && input.length !== 1) {
+  for (let x = 1; x < input.length; x++) {
+    filenames.push(input[x]);
+  }
 }
 
 const args = {
@@ -42,3 +50,4 @@ const args = {
 }
 
 exports.arguments = args;
+exports.filenames = filenames;

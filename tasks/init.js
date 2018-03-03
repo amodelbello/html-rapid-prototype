@@ -5,7 +5,7 @@ const fh = require('../helpers/file');
 const build_task = require('../tasks/build');
 
 
-exports.generateBaseScaffold = () => {
+exports.createBaseScaffold = () => {
   Promise.all([
     fh.fileDoesNotExist('src'),
     fh.fileDoesNotExist('dist'),

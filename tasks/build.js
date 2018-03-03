@@ -24,6 +24,7 @@ exports.build = () => {
             yield fh.createFile(`${config.destination_dir}/${file}`, content);
           }
 
+          console.log(``);
           console.log(`Done!`);
         }
         catch(e) {

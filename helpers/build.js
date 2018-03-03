@@ -90,7 +90,7 @@ exports.buildContent = (file) => {
       }
       catch(e) {
         logger.error();
-        reject(`Unable: ${e}`);
+        reject(`Unable to build content: ${e}`);
       }
     });
   });

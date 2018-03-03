@@ -16,7 +16,7 @@ exports.fileDoesNotExist = (path) => {
   return new Promise((resolve, reject) => {
     fs.stat(path, (err, stats) => {
       if (err || stats == undefined) {
-        return resolve();
+        return resolve(true);
       }
       return reject(`${path} already exists.`);
     });
