@@ -1,21 +1,12 @@
-const yargs = require('yargs')
-const argv = yargs
-  .usage('Usage: html-rapid-prototype <command> [options]')
-  .command('init', 'Create basic scaffold')
-  .command('build', 'Build static html files')
-  .command('generate <file>...', 'Generate new content source file(s)')
-  .command('watch', 'Trigger build on all changes to source directory')
-  .version()
+const argv = require('yargs')
+  .help(false)
   .alias('v', 'version')
-  .help('h')
-  .alias('h', 'help')
-  .epilogue('GitHub repository: https://github.com/amodelbello/html-rapid-prototype')
   .argv;
 
 let error = false;
 let input = argv._;
 
-if (input.length === 0 || input.length > 2) {
+if (input.length === 0) {
   error = true;
 }
 
@@ -28,7 +19,7 @@ if (
   error = true;
 }
 
-if (input[0] === 'generate' && input.length !== 2) {
+if (input[0] === 'generate' && input.length < 2) {
   error = true;
 }
 
@@ -37,7 +28,8 @@ if (input[0] !== 'generate' && input.length !== 1) {
 }
 
 if (error) {
-  yargs.showHelp();
+  // TODO: Write real usage output
+  console.log('ERROR!');
   process.exit(1);
 }
 
