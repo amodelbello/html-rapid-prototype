@@ -1,3 +1,4 @@
+const usage = require('../config/boilerplate_content').usage;
 const argv = require('yargs')
   .help(false)
   .alias('v', 'version')
@@ -28,9 +29,8 @@ if (input[0] !== 'generate' && input.length !== 1) {
 }
 
 if (error) {
-  // TODO: Write real usage output
-  console.log('ERROR!');
-  process.exit(1);
+  console.log(usage);
+  process.exit;
 }
 
 const args = {
