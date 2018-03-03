@@ -1,3 +1,4 @@
+const util = require('../helpers/util')
 const logger = require('tracer').colorConsole();
 const fs = require('fs');
 
@@ -118,7 +119,7 @@ exports.getDirectoryFilesContents = (path) => {
     .then((files) => {
       return new Promise((resolve, reject) => {
         let filesContents = new Map();
-        exports.async(function*() {
+        util.async(function*() {
           try {
             for (let file of files) {
               let content = yield exports.getFileContents(`${path}/${file}`);
@@ -150,7 +151,7 @@ exports.getDirectoryFiles = (path) => {
     .then((contents) => {
       return new Promise((resolve, reject) => {
         let files = [];
-        exports.async(function*() {
+        util.async(function*() {
           try {
             for (let file of contents) {
               let isFile = yield exports.isFile(`${path}/${file}`);
@@ -188,7 +189,7 @@ exports.getFileContents = (path) => {
 
 exports.copyDirectoryRecursive = (directoryPath, destination, force = false) => {
   return new Promise((resolve, reject) => {
-    exports.async(function*() {
+    util.async(function*() {
       try {
         let directory = directoryPath.split('/').pop();
         let destinationExists = yield exports.fileExists(`${destination}/${directory}`);
@@ -224,7 +225,7 @@ exports.copyDirectoryRecursive = (directoryPath, destination, force = false) => 
 
 exports.deleteDirectoryRecursive = (path) => {
   return new Promise((resolve, reject) => {
-    exports.async(function*() {
+    util.async(function*() {
       try {
         let exists = yield exports.fileExists(path);
         if (!exists) {
@@ -255,32 +256,3 @@ exports.deleteDirectoryRecursive = (path) => {
     });
   });
 };
-
-exports.async = (generator) => {
-  var iterator = generator();
-
-  function handle(iteratorResult) {
-    if (iteratorResult.done) {
-      return;
-    }
-
-    const iteratorValue = iteratorResult.value;
-
-    if (iteratorValue instanceof Promise) {
-      iteratorValue
-        .then(res => handle(iterator.next(res)))
-        .catch(e => {
-          logger.error();
-          iterator.throw(e)
-        });
-    }
-  }
-
-  try {
-    handle(iterator.next());
-  }
-  catch (e) { 
-    logger.error();
-    iterator.throw(e); 
-  }
-}

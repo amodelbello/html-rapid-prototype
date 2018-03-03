@@ -7,6 +7,7 @@ const build_task = require('../tasks/build');
 
 exports.createBaseScaffold = () => {
   Promise.all([
+    // TODO: Probably better to just ensure current directory is empty
     fh.fileDoesNotExist('src'),
     fh.fileDoesNotExist('dist'),
     fh.fileDoesNotExist('config.json'),
@@ -35,6 +36,8 @@ exports.createBaseScaffold = () => {
   .then(() => fh.createDirectory(`${config.source_dir}/js`))
   .then(() => fh.createFile(`${config.source_dir}/js/script.js`, ''))
   .then(() => {
+
+    // TODO: Make this actually read directory contents recursively and output that
     console.log(`
 Generated basic scaffold:
 config.json

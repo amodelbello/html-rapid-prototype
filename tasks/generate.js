@@ -2,6 +2,7 @@ const logger = require('tracer').colorConsole();
 const cli = require('../helpers/cli');
 const config = require('../config/config');
 const fh = require('../helpers/file');
+const util = require('../helpers/util')
 const build_task = require('../tasks/build');
 
 function generateContentFile(file) {
@@ -17,7 +18,7 @@ function generateContentFile(file) {
 exports.generateNewContentFiles = () => {
   return new Promise((resolve, reject) => {
 
-    fh.async(function*() {
+    util.async(function*() {
       try {
         let files = cli.filenames;
         for(let file of files) {
