@@ -24,7 +24,7 @@ if (input[0] === 'generate' && input.length < 2) {
   error = true;
 }
 
-if (input[0] !== 'generate' && input.length !== 1) {
+if (input[0] !== 'generate' && input[0] !== 'init' && input.length !== 1) {
   error = true;
 }
 
@@ -35,7 +35,7 @@ if (error) {
 
 // generate command called - get files names to generate
 let filenames = [];
-if (!error && input[0] === 'generate' && input.length !== 1) {
+if (!error && (input[0] === 'generate' || input[0] === 'init') && input.length !== 1) {
   for (let x = 1; x < input.length; x++) {
     filenames.push(input[x]);
   }

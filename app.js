@@ -12,7 +12,13 @@ if (cli.arguments.build) {
 
 if (cli.arguments.generate) {
   const generate_task = require('./tasks/generate');
-  generate_task.generateNewContentFiles();
+  const build_task = require('./tasks/build');
+
+  generate_task.generateNewContentFiles()
+  .then(() => build_task.build())
+  .catch(e => {
+    console.log(`Could not generate file(s): ${e}`);
+  });
 }
 
 if (cli.arguments.watch) {

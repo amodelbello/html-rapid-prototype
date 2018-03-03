@@ -3,6 +3,7 @@ const boilerplate = require('../config/boilerplate_content');
 const config = require('../config/config');
 const fh = require('../helpers/file');
 const build_task = require('../tasks/build');
+const generate_task = require('../tasks/generate');
 
 
 exports.createBaseScaffold = () => {
@@ -28,7 +29,7 @@ exports.createBaseScaffold = () => {
   .then(() => fh.createDirectory(config.partials_dir))
   .then(() => fh.createFile(`${config.partials_dir}/header.html`, boilerplate.header))
   .then(() => fh.createFile(`${config.partials_dir}/footer.html`, boilerplate.footer))
-  .then(() => fh.createFile(`${config.source_dir}/index.html`, boilerplate.index))
+  .then(() => generate_task.generateNewContentFiles())
 
   // Create css and js files
   .then(() => fh.createDirectory(`${config.source_dir}/css`))
@@ -39,19 +40,7 @@ exports.createBaseScaffold = () => {
 
     // TODO: Make this actually read directory contents recursively and output that
     console.log(`
-Generated basic scaffold:
-config.json
-src/
-  index.html
-  layouts/
-    layout.html
-  partials/
-    header.html
-    footer.html
-  css/
-    style.css
-  js/
-    script.css
+Generated basic scaffold
     `);
   })
 

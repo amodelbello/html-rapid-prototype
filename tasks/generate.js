@@ -30,8 +30,7 @@ exports.generateNewContentFiles = () => {
           }
         }
 
-        console.log(``);
-        yield build_task.build();
+        return resolve();
       }
       catch(e) {
         logger.error();
