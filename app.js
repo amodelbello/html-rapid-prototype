@@ -12,11 +12,9 @@ if (cli.arguments.build) {
 
 if (cli.arguments.generate) {
   const generate_task = require('./tasks/generate');
-  build_task.build();
+  // build_task.build();
 }
 
 if (cli.arguments.watch) {
   const watch_task = require('./tasks/watch');
 }
-
-console.log("This is the beginning...");

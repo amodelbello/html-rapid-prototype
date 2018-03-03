@@ -16,8 +16,11 @@
   ],
   "author": "Amo DelBello",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:amodelbello/html-rapid-prototype.git"
+  },
   "dependencies": {
-    "in_array": "^1.1.0",
     "node-watch": "^0.5.7",
     "tracer": "^0.8.12",
     "yargs": "^11.0.0"
