@@ -4,15 +4,19 @@ Template system for static html files to make prototype iterations fast and easy
 
 Usage: 
 
-  rp init [files ...]       Create basic scaffold. If no files specified defaults to single index.html file
-  rp build                  Build static html files
-  rp wait                   Trigger build on all changes to source directory
-  rp generate <files ...>   Generate new content source file(s), at least one file is required
+  rp <command> [files ...]       
+
+Commands:
+
+  i, init [files ...]       Create basic scaffold. If no files specified defaults to single index.html file
+  b, build                  Build static html files
+  w, wait                   Trigger build on all changes to source directory
+  g, generate <files ...>   Generate new content source file(s), at least one file is required
 
 Options:
 
   -h, --help                output usage information (this message)
-  -V, --version             output the version number
+  -v, --version             output the version number
 
   GitHub repository: https://github.com/amodelbello/html-rapid-prototype
 `;

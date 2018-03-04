@@ -4,54 +4,72 @@ const argv = require('yargs')
   .alias('v', 'version')
   .argv;
 
-let error = false;
 let input = argv._;
 
-if (input.length === 0) {
-  error = true;
-}
-
-if (
-  input[0] !== 'init' &&
-  input[0] !== 'build' &&
-  input[0] !== 'generate' &&
-  input[0] !== 'watch'
-) {
-  error = true;
-}
-
-if (input[0] === 'generate' && input.length < 2) {
-  error = true;
-}
-
-if (input[0] !== 'generate' && input[0] !== 'init' && input.length !== 1) {
-  error = true;
-}
-
-if (error) {
+function error() {
   console.log(usage);
-  process.exit(1);
-}
-
-// generate (or init) command called - get file names to generate
-let filenames = [];
-if (!error && (input[0] === 'generate' || input[0] === 'init') && input.length !== 1) {
-  for (let x = 1; x < input.length; x++) {
-    filenames.push(input[x]);
-  }
-} else if (input[0] === 'init' && input.length === 1) {
-  // init called with no filenames specified. Add default index.html
-  if (!filenames.length) {
-    filenames.push('index.html');
-  }
+  process.exit(1)  
 }
 
 const args = {
-  init: (input[0] == 'init'),
-  build: (input[0] == 'build'),
-  watch: (input[0] == 'watch'),
-  generate: (input[0] == 'generate'),
-  file: (input[1] || false),
+  init: false,
+  build: false,
+  watch: false,
+  generate: false,
+}
+let filenames = [];
+
+
+// No commands - error
+if (input.length === 0) {
+  error();
+}
+
+// Parse commands
+switch(input[0]) {
+
+  case 'build':
+  case 'b':
+    args.build = true;
+    if (input.length !== 1) {
+      error();
+    }
+    break;
+
+  case 'watch':
+  case 'w':
+    args.watch = true;
+    if (input.length !== 1) {
+      error();
+    }
+    break;
+
+  case 'generate':
+  case 'g':
+    args.generate = true;
+    if (input.length < 2) {
+      error();
+    }
+    for (let x = 1; x < input.length; x++) {
+      filenames.push(input[x]);
+    }
+    break;
+
+  case 'init':
+  case 'i':
+    args.init = true;
+    if (input.length === 1) {
+      filenames.push('index.html');
+    } else {
+      for (let x = 1; x < input.length; x++) {
+        filenames.push(input[x]);
+      }
+    }
+    break;
+
+  default:
+    error();
+    break;
 }
 
 exports.arguments = args;
