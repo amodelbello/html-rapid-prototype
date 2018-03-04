@@ -33,11 +33,16 @@ if (error) {
   process.exit(1);
 }
 
-// generate command called - get files names to generate
+// generate (or init) command called - get file names to generate
 let filenames = [];
 if (!error && (input[0] === 'generate' || input[0] === 'init') && input.length !== 1) {
   for (let x = 1; x < input.length; x++) {
     filenames.push(input[x]);
+  }
+} else if (input[0] === 'init' && input.length === 1) {
+  // init called with no filenames specified. Add default index.html
+  if (!filenames.length) {
+    filenames.push('index.html');
   }
 }
 

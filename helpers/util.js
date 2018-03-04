@@ -1,3 +1,4 @@
+// TODO: Make variable delimeters configurable
 exports.getFileNameFromVariableName = (variableName) => {
   let filename = variableName.replace('{{', '')
   .replace('}}', '')

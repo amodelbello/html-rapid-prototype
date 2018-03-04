@@ -29,6 +29,7 @@ exports.createBaseScaffold = () => {
   .then(() => fh.createDirectory(config.partials_dir))
   .then(() => fh.createFile(`${config.partials_dir}/header.html`, boilerplate.header))
   .then(() => fh.createFile(`${config.partials_dir}/footer.html`, boilerplate.footer))
+
   .then(() => generate_task.generateNewContentFiles())
 
   // Create css and js files
