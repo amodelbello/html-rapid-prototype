@@ -14,7 +14,13 @@ exports.createBaseScaffold = () => {
     fh.fileDoesNotExist('config.json'),
   ])
   .then(() => {
-    console.log(`Initializing new project...`);
+    console.log(`\nInitializing new project...`);
+  })
+
+  .then(() => {
+
+    // TODO: Make this actually read directory contents recursively and output that
+    console.log(`Generating basic scaffold`);
   })
 
   // Create directories and files
@@ -37,13 +43,6 @@ exports.createBaseScaffold = () => {
   .then(() => fh.createFile(`${config.source_dir}/css/style.css`, ''))
   .then(() => fh.createDirectory(`${config.source_dir}/js`))
   .then(() => fh.createFile(`${config.source_dir}/js/script.js`, ''))
-  .then(() => {
-
-    // TODO: Make this actually read directory contents recursively and output that
-    console.log(`
-Generated basic scaffold
-    `);
-  })
 
   // Build files
   .then(() => {

@@ -24,5 +24,12 @@ exports.run = () => {
 
   if (cli.arguments.watch) {
     const watch_task = require('./tasks/watch');
+    const build_task = require('./tasks/build');
+
+    build_task.build()
+    .then(() => watch_task.watchForChanges())
+    .catch(e => {
+      console.log(`Unable to watch for changes: ${e}`);
+    })
   }
 };

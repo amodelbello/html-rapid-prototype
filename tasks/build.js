@@ -91,13 +91,13 @@ function buildContent(file) {
 };
 
 exports.build = () => {
-  fh.getDirectoryFiles(config.source_dir)
+  return fh.getDirectoryFiles(config.source_dir)
   .then((files) => {
     return new Promise((resolve, reject) => {
       util.async(function*() {
         try {
 
-          console.log(`Copying css and js files...`);
+          console.log(`\nCopying css and js files...`);
           yield fh.deleteDirectoryRecursive(config.destination_dir);
           yield fh.createDirectory(config.destination_dir);
 
@@ -105,23 +105,24 @@ exports.build = () => {
           yield fh.copyDirectoryRecursive(`${config.source_dir}/js`, config.destination_dir);
 
           for (let file of files) {
-            console.log(`Building ${file}`);
+            console.log(`Building ${config.destination_dir}/${file}`);
             let content = yield buildContent(file);
             yield fh.createFile(`${config.destination_dir}/${file}`, content);
           }
 
-          console.log(``);
-          console.log(`Done!`);
+          console.log(`\nDone!`);
+
+          return resolve();
         }
         catch(e) {
           logger.error();
-          reject(`Unable to build ${file}`);
+          return reject(`Unable to build ${file}`);
         }
       });
 
-      resolve();
-
     });
+    
+    return resolve();
   })
 
   .catch(e => {
