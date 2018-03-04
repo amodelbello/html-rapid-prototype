@@ -8,6 +8,11 @@ exports.watchForChanges = () => {
   console.log(`\nWatching for changes on ${cwd}/${config.source_dir}`);
 
   watch(`${config.source_dir}`, { recursive: true }, function(evt, name) {
-    build_task.build();
+    build_task.build()
+    .catch(e => {
+      console.log(`Unable to build while watching for changes: ${e}`);
+      console.log('Exiting...');
+      process.exit(1);
+    })
   });
 }

@@ -3,7 +3,6 @@ const cli = require('../helpers/cli');
 const config = require('../config/config');
 const fh = require('../helpers/file');
 const util = require('../helpers/util')
-const build_task = require('../tasks/build');
 
 function generateContentFile(file) {
   return new Promise((resolve, reject) => {

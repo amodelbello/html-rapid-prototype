@@ -116,17 +116,16 @@ exports.build = () => {
         }
         catch(e) {
           logger.error();
-          return reject(`Unable to build ${file}`);
+          return reject(`Unable to build file: ${e}`);
         }
       });
 
-    });
-    
-    return resolve();
+    })
   })
 
   .catch(e => {
     logger.error();
-    console.log(`Problem building: ${e}`);
+    let message = `Problem getting directory files: ${e}`;
+    throw message;
   });
 };

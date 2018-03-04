@@ -7,7 +7,7 @@ const generate_task = require('../tasks/generate');
 
 
 exports.createBaseScaffold = () => {
-  Promise.all([
+  return Promise.all([
     // TODO: Probably better to just ensure current directory is empty
     fh.fileDoesNotExist('src'),
     fh.fileDoesNotExist('dist'),

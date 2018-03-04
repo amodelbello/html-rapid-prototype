@@ -1,3 +1,5 @@
+const logger = require('tracer').colorConsole();
+
 // TODO: Make variable delimeters configurable
 exports.getFileNameFromVariableName = (variableName) => {
   let filename = variableName.replace('{{', '')

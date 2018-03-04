@@ -38,6 +38,7 @@ exports.createFile = (path, content) => {
   return new Promise((resolve, reject) => {
     fs.writeFile(path, content, (err) => {
       if (err) return reject(`Something went wrong creating ${path} file: ${err}`);
+
       return resolve();
     });
   });
@@ -127,9 +128,9 @@ exports.getDirectoryFilesContents = (path) => {
             }
             resolve(filesContents);
           }
-          catch(error) {
+          catch(e) {
             logger.error();
-            reject(`Unable to get contents of files from ${path}: ${error}`);
+            reject(`Unable to get contents of files from ${path}: ${e}`);
           }
         });
       });
