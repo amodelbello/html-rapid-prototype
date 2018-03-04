@@ -39,7 +39,7 @@ dist/
   js/
     script.js
   img/
-    test.png
+    test.jpg
   index.html
 ```
 Alternatively you can specify file names with the init command to generate content files on project creation, e.g:
