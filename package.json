@@ -1,6 +1,6 @@
 {
   "name": "html-rapid-prototype",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Template system for static html files to make prototype iterations fast and easy",
   "main": "app.js",
   "scripts": {
