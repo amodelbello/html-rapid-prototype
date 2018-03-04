@@ -6,6 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "bin": {
+    "rp": "./bin/run.js"
+  },
+  "preferGlobal": true,
   "keywords": [
     "html",
     "template",
