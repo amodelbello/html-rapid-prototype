@@ -49,4 +49,3 @@ exports.layout = `<!DOCTYPE html>
 </html>`;
 exports.header = `<header>THIS IS THE HEADER</header>`;
 exports.footer = `<footer>THIS IS THE FOOTER</footer>`;
-exports.index = `<main>MAIN CONTENT</main>`;

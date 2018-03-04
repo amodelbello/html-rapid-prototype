@@ -23,7 +23,6 @@ exports.async = (generator) => {
       iteratorValue
         .then(res => handle(iterator.next(res)))
         .catch(e => {
-          logger.error();
           iterator.throw(e)
         });
     }

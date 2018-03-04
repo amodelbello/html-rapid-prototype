@@ -97,12 +97,13 @@ exports.build = () => {
       util.async(function*() {
         try {
 
-          console.log(`\nCopying css and js files...`);
+          console.log(`\nCopying css, js, and img files...`);
           yield fh.deleteDirectoryRecursive(config.destination_dir);
           yield fh.createDirectory(config.destination_dir);
 
           yield fh.copyDirectoryRecursive(`${config.source_dir}/css`, config.destination_dir);
           yield fh.copyDirectoryRecursive(`${config.source_dir}/js`, config.destination_dir);
+          yield fh.copyDirectoryRecursive(`${config.source_dir}/img`, config.destination_dir);
 
           for (let file of files) {
             console.log(`Building ${config.destination_dir}/${file}`);
@@ -115,11 +116,11 @@ exports.build = () => {
           return resolve();
         }
         catch(e) {
-          logger.error();
           return reject(`Unable to build file: ${e}`);
         }
       });
 
+      return resolve();
     })
   })
 

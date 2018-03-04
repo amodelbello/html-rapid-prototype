@@ -251,7 +251,6 @@ exports.deleteDirectoryRecursive = (path) => {
         return resolve();
       }
       catch(e) {
-        logger.error();
         return reject(`Unable to recursively delete contents of directory ${path}: ${e}`);
       }
     });

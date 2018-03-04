@@ -38,11 +38,13 @@ exports.createBaseScaffold = () => {
 
   .then(() => generate_task.generateNewContentFiles())
 
-  // Create css and js files
+  // Create css, js, and img files
   .then(() => fh.createDirectory(`${config.source_dir}/css`))
   .then(() => fh.createFile(`${config.source_dir}/css/style.css`, ''))
   .then(() => fh.createDirectory(`${config.source_dir}/js`))
   .then(() => fh.createFile(`${config.source_dir}/js/script.js`, ''))
+  .then(() => fh.createDirectory(`${config.source_dir}/img`))
+  .then(() => fh.copyFile(`${__dirname}/../config/test.jpg`, `${config.source_dir}/img/test.jpg`))
 
   // Build files
   .then(() => {
