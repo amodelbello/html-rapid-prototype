@@ -24,7 +24,7 @@ src/
   js/
     script.js
   img/
-    test.png
+    test.jpg
   layouts/
     layout.html
   partials/
