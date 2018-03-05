@@ -4,7 +4,7 @@ Template system for static html files to make prototype iterations fast and easy
 Easily include partials, css, and js in your html.
 
 ## Installation
-```
+```bash
 npm install -g html-rapid-prototype
 ```
 
