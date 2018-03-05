@@ -4,7 +4,7 @@
   "description": "Template system for static html files to make prototype iterations fast and easy",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "nyc --reporter=html --reporter=text mocha --recursive"
   },
   "bin": {
     "rp": "./bin/run.js"
@@ -28,5 +28,9 @@
     "node-watch": "^0.5.7",
     "tracer": "^0.8.12",
     "yargs": "^11.0.0"
+  },
+  "devDependencies": {
+    "mocha": "^5.0.1",
+    "nyc": "^11.4.1"
   }
 }

@@ -6,7 +6,7 @@ exports.fileExists = (path) => {
   return new Promise((resolve, reject) => {
     fs.stat(path, (err, stats) => {
       if (err || stats == undefined) return resolve(false);
-      return resolve(stats);
+      return resolve(true);
     });
   });
 }
