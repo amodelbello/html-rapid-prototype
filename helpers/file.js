@@ -129,7 +129,6 @@ exports.getDirectoryFilesContents = (path) => {
             resolve(filesContents);
           }
           catch(e) {
-            logger.error();
             reject(`Unable to get contents of files from ${path}: ${e}`);
           }
         });

@@ -13,7 +13,7 @@ exports.run = () => {
     const build_task = require('./tasks/build');
     build_task.build()
     .catch(e => {
-      console.log(`Unable to watch for changes: ${e}`);
+      console.log(`Unable to build: ${e}`);
     });
   }
 
@@ -24,7 +24,8 @@ exports.run = () => {
     generate_task.generateNewContentFiles()
     .then(() => build_task.build())
     .catch(e => {
-      console.log(`Could not generate file(s): ${e}`);
+      console.log(`Could not generate file: ${e}`);
+      console.log(`Check the src directory.`);
     });
   }
 

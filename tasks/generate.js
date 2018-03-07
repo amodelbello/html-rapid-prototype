@@ -18,22 +18,30 @@ exports.generateNewContentFiles = () => {
   return new Promise((resolve, reject) => {
 
     let files = cli.filenames;
-    for(let file of files) {
-      fh.fileExists(`${config.source_dir}/${file}`)
-      .then((exists) => {
-        if(!exists) {
-          generateContentFile(file);
+    let error = '';
+    util.async(function*() {
 
-        } else {
-          console.log(`Could not generate ${config.source_dir}/${file} because it already exists`);
+      try {
+        console.log(``);
+        for(let file of files) {
+
+          let fileExists = yield fh.fileExists(`${config.source_dir}/${file}`);
+
+          if (!fileExists) {
+            yield generateContentFile(file);
+          } else {
+            error += `\n${config.source_dir}/${file} already exists`;
+          }
         }
-      })
-      .catch(e => {
+        if (error !== '') {
+          return reject(error);
+        } else {
+          return resolve();
+        }
+      }
+      catch(e) {
         throw e;
-      });
-    }
-
-    return resolve();
-
+      }
+    });
   });
 };

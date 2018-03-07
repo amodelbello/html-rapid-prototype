@@ -2,6 +2,7 @@ const shell = require('shelljs');
 const in_array = require('in_array');
 const assert = require('assert');
 const content = require('./content');
+const stringSimilarity = require('string-similarity');
 
 describe('init - Integration', () => {
  
@@ -14,11 +15,13 @@ describe('init - Integration', () => {
     shell.cd('..')
   });
 
-  describe('init with no files specified', () => {
-    it('run init and see correct output message and generated files', () => {
+  describe('run init and see correct output message and generated files', () => {
+
+    it('init with no files specified', () => {
      
-      let initOutput = shell.exec('../bin/run.js init', {silent:true}).stdout;
-      assert(initOutput == content.correctInitOutput1, `Incorrect output: ${initOutput}`);
+      let output = shell.exec('../bin/run.js init', {silent:true}).stdout;
+      const similarity = stringSimilarity.compareTwoStrings(output, content.correctInitOutput1);
+      assert(similarity > content.stringSimilarityThreshold, `Unacceptable output similarity: ${similarity}`);
 
       // project root
       const lsTestSite = shell.ls();
@@ -53,10 +56,10 @@ describe('init - Integration', () => {
 
       // dist directory
       const lsDist = shell.ls('dist');
-      assert(in_array('css', lsSrc), 'dist/css directory does not exist.');
-      assert(in_array('img', lsSrc), 'dist/img directory does not exist.');
-      assert(in_array('js', lsSrc), 'dist/js directory does not exist.');
-      assert(in_array('index.html', lsSrc), 'dist/index.html file does not exist.');
+      assert(in_array('css', lsDist), 'dist/css directory does not exist.');
+      assert(in_array('img', lsDist), 'dist/img directory does not exist.');
+      assert(in_array('js', lsDist), 'dist/js directory does not exist.');
+      assert(in_array('index.html', lsDist), 'dist/index.html file does not exist.');
 
       const lsDistCss = shell.ls('dist/css');
       assert(in_array('style.css', lsDistCss), 'dist/css/style.css file does not exist.');
@@ -72,14 +75,12 @@ describe('init - Integration', () => {
       assert(indexFileContent == content.correctIndexFileContent, `dist/index.html has incorrect content: ${indexFileContent}`);
 
     });
-  });
 
-  describe('init with files specified', () => {
-
-    it('run init and see correct output message and generated files', () => {
+    it('init with files specified', () => {
      
-      let initOutput = shell.exec('../bin/run.js init index.html about.html', {silent:true}).stdout;
-      assert(initOutput == content.correctInitOutput2, `Incorrect output: ${initOutput}`);
+      let output = shell.exec('../bin/run.js init index.html about.html', {silent:true}).stdout;
+      const similarity = stringSimilarity.compareTwoStrings(output, content.correctInitOutput2);
+      assert(similarity > content.stringSimilarityThreshold, `Unacceptable output similarity: ${similarity}`);
 
       // src directory
       const lsSrc = shell.ls('src');
@@ -88,8 +89,8 @@ describe('init - Integration', () => {
 
       // dist directory
       const lsDist = shell.ls('dist');
-      assert(in_array('index.html', lsSrc), 'dist/index.html file does not exist.');
-      assert(in_array('about.html', lsSrc), 'dist/about.html file does not exist.');
+      assert(in_array('index.html', lsDist), 'dist/index.html file does not exist.');
+      assert(in_array('about.html', lsDist), 'dist/about.html file does not exist.');
 
       // index.html
       const indexFileContent = shell.cat('dist/index.html').stdout;
@@ -100,11 +101,8 @@ describe('init - Integration', () => {
       assert(aboutFileContent == content.correctAboutFileContent, `dist/about.html has incorrect content: ${aboutFileContent}`);
 
     });
-  });
 
-  describe('init with source files already existing', () => {
-
-    it('run init with source files already existing and see error message', () => {
+    it('init with source files already existing', () => {
       // First run
       shell.exec('../bin/run.js init', {silent:true}).stdout;
 
