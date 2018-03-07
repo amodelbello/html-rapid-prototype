@@ -17,24 +17,23 @@ function generateContentFile(file) {
 exports.generateNewContentFiles = () => {
   return new Promise((resolve, reject) => {
 
-    util.async(function*() {
-      try {
-        let files = cli.filenames;
-        for(let file of files) {
-          let fileDoesNotExist = yield fh.fileDoesNotExist(`${config.source_dir}/${file}`);
-          if (fileDoesNotExist) {
-            yield generateContentFile(file);
-          } else {
-            return reject(`Could not generate. File: ${config.source_dir}/${file} already exists`);
-          }
-        }
+    let files = cli.filenames;
+    for(let file of files) {
+      fh.fileExists(`${config.source_dir}/${file}`)
+      .then((exists) => {
+        if(!exists) {
+          generateContentFile(file);
 
-        return resolve();
-      }
-      catch(e) {
-        logger.error();
-        return reject(`Unable to generate content files: ${e}`);
-      }
-    });
+        } else {
+          console.log(`Could not generate ${config.source_dir}/${file} because it already exists`);
+        }
+      })
+      .catch(e => {
+        throw e;
+      });
+    }
+
+    return resolve();
+
   });
 };

@@ -1,25 +1,43 @@
 const fh = require('../../helpers/file');
 const assert = require('assert');
+const sinon = require('sinon');
+var Promise = require('bluebird');
+var fs = Promise.promisifyAll(require('fs'));
 
 describe('file', () => {
+  const stub = sinon.stub(fs, 'statAsync')
+  stub.onCall(0).returns(Promise.resolve(true));
+  stub.onCall(1).returns(Promise.reject());
+ 
   describe('.fileExists(path)', () => {
 
     it('should confirm that a file exists', (done) => {
-      const file = `test/test-assets/test-directory/test-file.html`
+
+      const file = `exists.html`;
+
       fh.fileExists(file)
         .then((exists) => {
           assert(exists === true);
           done();
+        })
+        .catch(e => {
+          console.log(`Error ${e}`);
         });
+
     });
 
     it('should confirm that a file does not exist', (done) => {
-      const file = `this/does/not/exist.html`;
+
+      const file = `does-not-exist.html`;
       fh.fileExists(file)
         .then((exists) => {
           assert(exists === false);
           done();
+        })
+        .catch(e => {
+          console.log(`Error ${e}`);
         });
+
     });
   });
 });

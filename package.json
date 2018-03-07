@@ -25,12 +25,14 @@
     "url": "git+ssh://git@github.com:amodelbello/html-rapid-prototype.git"
   },
   "dependencies": {
+    "bluebird": "^3.5.1",
     "node-watch": "^0.5.7",
     "tracer": "^0.8.12",
     "yargs": "^11.0.0"
   },
   "devDependencies": {
     "mocha": "^5.0.1",
-    "nyc": "^11.4.1"
+    "nyc": "^11.4.1",
+    "sinon": "^4.4.2"
   }
 }

@@ -9,17 +9,23 @@ const generate_task = require('../tasks/generate');
 exports.createBaseScaffold = () => {
   return Promise.all([
     // TODO: Probably better to just ensure current directory is empty
-    fh.fileDoesNotExist('src'),
-    fh.fileDoesNotExist('dist'),
-    fh.fileDoesNotExist('config.json'),
+    fh.fileExists('src'),
+    fh.fileExists('dist'),
+    fh.fileExists('config.json'),
   ])
-  .then(() => {
-    console.log(`\nInitializing new project...`);
+  .then((values) => {
+    for (let exists of values) {
+      if (exists === true) {
+        throw Error("Make sure src/, dist/, and config.json do not exist in current directory.");
+      }
+    }
+    // resolve();
   })
 
   .then(() => {
 
     // TODO: Make this actually read directory contents recursively and output that
+    console.log(`\nInitializing new project...`);
     console.log(`Generating basic scaffold`);
   })
 
@@ -51,7 +57,6 @@ exports.createBaseScaffold = () => {
     build_task.build();
   })
   .catch(e => {
-    logger.error();
     console.log(`Problem generating base scaffold: ${e}`);
   });
 };

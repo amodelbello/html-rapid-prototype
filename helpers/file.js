@@ -1,27 +1,18 @@
 const util = require('../helpers/util')
 const logger = require('tracer').colorConsole();
-const fs = require('fs');
+var Promise = require('bluebird');
+var fs = Promise.promisifyAll(require('fs'));
+// const fs = require('fs');
 
+
+// TODO: Using fs.stat() to check for the existence of a file before calling fs.open(), fs.readFile() or fs.writeFile() is not recommended. Instead, user code should open/read/write the file directly and handle the error raised if the file is not available.
 exports.fileExists = (path) => {
-  return new Promise((resolve, reject) => {
-    fs.stat(path, (err, stats) => {
-      if (err || stats == undefined) return resolve(false);
-      return resolve(true);
+    return fs.statAsync(path).then((stats) => {
+      return true;
+    })
+    .catch(e => {
+      return false;
     });
-  });
-}
-
-// FIXME: Figure out a better way to return. bool? resolve()? what...
-// Do we even need this function?
-exports.fileDoesNotExist = (path) => {
-  return new Promise((resolve, reject) => {
-    fs.stat(path, (err, stats) => {
-      if (err || stats == undefined) {
-        return resolve(true);
-      }
-      return reject(`${path} already exists.`);
-    });
-  });
 }
 
 exports.createDirectory = (path) => {
@@ -35,6 +26,15 @@ exports.createDirectory = (path) => {
 }
 
 exports.createFile = (path, content) => {
+    return fs.writeFileAsync(path, content).then(() => {
+      return true;
+    })
+    .catch(e => {
+      return false;
+    });
+}
+
+exports.createFile2 = (path, content) => {
   return new Promise((resolve, reject) => {
     fs.writeFile(path, content, (err) => {
       if (err) return reject(`Something went wrong creating ${path} file: ${err}`);
@@ -63,15 +63,15 @@ exports.deleteDirectory = (path) => {
 }
 
 exports.isFile = (path) => {
-  return new Promise((resolve, reject) => {
-    fs.stat(path, (err, stats) => {
-      if (err) return reject(err);
-      if (stats != undefined && stats.isFile()) {
-        return resolve(true);
-      } else {
-        return resolve(false);
-      }
-    });
+  return fs.statAsync(path).then((stats) => {
+    if (stats != undefined && stats.isFile()) {
+      return true;
+    } else {
+      return false;
+    }
+  })
+  .catch(e => {
+    return false;
   });
 }
 
