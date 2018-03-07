@@ -25,29 +25,40 @@ exports.createDirectory = (path) => {
 }
 
 exports.createFile = (path, content) => {
-    return fs.writeFileAsync(path, content).then(() => {
-      return true;
-    })
-    .catch(e => {
-      return false;
-    });
+
+  return exports.fileExists(path)
+  .then((exists) => { 
+    if (!exists) {
+      return fs.writeFileAsync(path, content).then(() => {
+        return true;
+      })
+      .catch(e => {
+        return false;
+      });
+    } else {
+      throw `Could not create file. ${path} already exists`;
+    }
+  });
+
 }
 
 exports.deleteFile = (path) => {
-  return new Promise((resolve, reject) => {
-    fs.unlink(path, (err) => {
-      if (err) return reject(`Something went wrong deleting file: ${path}: ${err}`);
-      return resolve();
-    });
+  return fs.unlinkAsync(path)
+  .then(() => {
+    return true;
+  })
+  .catch(e => {
+    return false;
   });
 }
 
 exports.deleteDirectory = (path) => {
-  return new Promise((resolve, reject) => {
-    fs.rmdir(path, (err) => {
-      if (err) return reject(`Something went wrong deleting directory: ${path}: ${err}`);
-      return resolve();
-    });
+  return fs.rmdirAsync(path)
+  .then(() => {
+    return true;
+  })
+  .catch(e => {
+    return false;
   });
 }
 
