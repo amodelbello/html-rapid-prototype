@@ -1,4 +1,4 @@
-const util = require('../../helpers/util');
+const util = require('../../../helpers/util');
 const assert = require('assert');
 
 describe('util', () => {

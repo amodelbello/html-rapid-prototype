@@ -31,8 +31,10 @@
     "yargs": "^11.0.0"
   },
   "devDependencies": {
+    "in_array": "^1.1.0",
     "mocha": "^5.0.1",
     "nyc": "^11.4.1",
+    "shelljs": "^0.8.1",
     "sinon": "^4.4.2"
   }
 }
