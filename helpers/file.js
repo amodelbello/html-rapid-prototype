@@ -7,21 +7,20 @@ var fs = Promise.promisifyAll(require('fs'));
 
 // TODO: Using fs.stat() to check for the existence of a file before calling fs.open(), fs.readFile() or fs.writeFile() is not recommended. Instead, user code should open/read/write the file directly and handle the error raised if the file is not available.
 exports.fileExists = (path) => {
-    return fs.statAsync(path).then((stats) => {
-      return true;
-    })
-    .catch(e => {
-      return false;
-    });
+  return fs.statAsync(path).then((stats) => {
+    return true;
+  })
+  .catch(e => {
+    return false;
+  });
 }
 
 exports.createDirectory = (path) => {
-  return new Promise((resolve, reject) => {
-    fs.mkdir(path, (err) => {
-      if (err) return reject(`Somthing went wrong creating ${path} directory: ${err}`);
-      
-      return resolve();
-    });
+  return fs.mkdirAsync(path).then(() => {
+    return true;
+  })
+  .catch(e => {
+    return false;
   });
 }
 
@@ -32,16 +31,6 @@ exports.createFile = (path, content) => {
     .catch(e => {
       return false;
     });
-}
-
-exports.createFile2 = (path, content) => {
-  return new Promise((resolve, reject) => {
-    fs.writeFile(path, content, (err) => {
-      if (err) return reject(`Something went wrong creating ${path} file: ${err}`);
-
-      return resolve();
-    });
-  });
 }
 
 exports.deleteFile = (path) => {
@@ -216,7 +205,6 @@ exports.copyDirectoryRecursive = (directoryPath, destination, force = false) => 
         return resolve();
       }
       catch(e) {
-        logger.error();
         return reject();
       }
     });
