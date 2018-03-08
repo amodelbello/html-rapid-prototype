@@ -121,12 +121,18 @@ exports.copyFile = (from, to, force = false) => {
   });
 }
 
+
 exports.getDirectoryContents = (path) => {
-  return new Promise((resolve, reject) => {
-    fs.readdir(path, (err, files) => {
-      if (err) return reject(`Something went wrong reading contents of ${path} directory: ${err}`);
-      resolve(files);
-    });
+  return fs.readdirAsync(path)
+  .then((files) => {
+    if (files) {
+      return files;
+    } else {
+      return false;
+    }
+  })
+  .catch(e => {
+    return false;
   });
 }
 
@@ -170,16 +176,17 @@ exports.getDirectoryFiles = (path) => {
         let files = [];
         util.async(function*() {
           try {
-            for (let file of contents) {
-              let isFile = yield exports.isFile(`${path}/${file}`);
-              if (isFile) {
-                files.push(file);
+            if (contents !== false) {
+              for (let file of contents) {
+                let isFile = yield exports.isFile(`${path}/${file}`);
+                if (isFile) {
+                  files.push(file);
+                }
               }
             }
             resolve(files);
           }
           catch(error) {
-            logger.error();
             reject(`Unable to get files from ${path}: ${error}`);
           }
         });

@@ -74,7 +74,6 @@ describe('helpers/file.js', () => {
   });
 
   describe('.deleteFile(path)', () => {
-
     it('should delete a file from the file system', (done) => {
       fh.deleteFile(stubs.fileThatExists)
       .then((success) => {
@@ -90,6 +89,11 @@ describe('helpers/file.js', () => {
         done();
       });
     });
+
+    // TODO: Add test:
+    // it('should not be able to delete a directory', (done) => {
+    // });
+
   });
 
   describe('.deleteDirectory(path)', () => {
@@ -109,13 +113,18 @@ describe('helpers/file.js', () => {
       })
     });
 
-    it('should not delete adirectory that does not exist', (done) => {
+    it('should not delete a directory that does not exist', (done) => {
       fh.deleteDirectory(stubs.directoryThatDoesNotExist)
       .then((success) => {
         assert(success === false);
         done();
       });
     });
+
+    // TODO: Add test:
+    // it('should not be able to delete a file', (done) => {
+    // });
+
   });
 
   describe('.isFile(path)', () => {
@@ -170,7 +179,6 @@ describe('helpers/file.js', () => {
     });
   });
 
-  // yield exports.copyFile(`${directoryPath}/${item}`, `${destination}/${directory}/${item}`, true);
   describe('.copyFile(from, to, force', () => {
     it('should copy an existing file to a destination file that does not yet exist', (done) => {
       fh.copyFile(stubs.fileThatExists, stubs.fileThatDoesNotExist)
@@ -199,7 +207,7 @@ describe('helpers/file.js', () => {
       });
     });
 
-    it('should not copy a file that doesn not exist to any destination', (done) => {
+    it('should not copy a file that does not exist to any destination', (done) => {
       fh.copyFile(stubs.fileThatDoesNotExist, stubs.fileThatExists)
       .then((success) => {
         console.log(`Should not be here: ${success}`)
@@ -209,6 +217,90 @@ describe('helpers/file.js', () => {
         done();
       });
     });
+  });
 
+  describe('.getDirectoryContents(path)', () => {
+    it("should read the contents of a directory that's is not empty", (done) => {
+      fh.getDirectoryContents(stubs.directoryWithContents)
+      .then((files) => {
+        assert(Array.isArray(files) === true, `returned data must be array`);
+        assert(files.length > 0, `returned array should not be empty`);
+        done();
+      });
+    });
+
+    it("should return false when fs.readdirAysnc returns an empty array", (done) => {
+      // for some reason fs.readdirAsync read the directory but returned no content
+      fh.getDirectoryContents(stubs.directoryWithContents + '2')
+      .then((files) => {
+        assert(files === false, `fs.readdirAsync should have returned nothing`);
+        done();
+      });
+    });
+
+    it("should not be able to read the contents of an empty directory", (done) => {
+      fh.getDirectoryContents(stubs.emptyDirectoryThatExists)
+      .then((files) => {
+        assert(files === false, `should not be getting contents back from an empty directory`);
+        done();
+      });
+    });
+
+    it("should not be able to read the contents of a file", (done) => {
+      fh.getDirectoryContents(stubs.fileThatExists)
+      .then((files) => {
+        assert(files === false, `should not be getting contents back from a file`);
+        done();
+      });
+    });
+
+    it("should not be able to read a directory that does not exist", (done) => {
+      fh.getDirectoryContents(stubs.directoryThatDoesNotExist)
+      .then((files) => {
+        assert(files === false, `should not be getting contents back from a directory that does not exist`);
+        done();
+      });
+    });
+  });
+
+  describe('.getDirectoryFilesContents(path)', () => {
+    it("should get the contents of the files in a directory", (done) => {
+      fh.getDirectoryFilesContents(stubs.directoryWithContents)
+      .then((contents) => {
+        assert(contents instanceof Map, 'returned contents should be a Map');
+        let test = contents.entries().next().value;
+        for (let item of contents.values()) {
+          assert(item != '', 'file content should not be empty');
+        }
+        done();
+      });
+    });
+
+    it("should not get contents of files in an empty directory", (done) => {
+      fh.getDirectoryFilesContents(stubs.emptyDirectoryThatExists)
+      .then((contents) => {
+        assert(contents instanceof Map, 'returned contents should be a Map');
+        assert(contents.entries().next().value === undefined, 'should not return contents of an empty directory')
+        done();
+      });
+    });
+
+    it("should not get contents of a file", (done) => {
+      fh.getDirectoryFilesContents(stubs.fileThatExists)
+      .then((contents) => {
+        assert(contents instanceof Map, 'returned contents should be a Map');
+        assert(contents.entries().next().value === undefined, 'should not return contents of an empty directory')
+        done();
+      });
+    });
+
+    it("should not get contents of a directory that does not exist", (done) => {
+      fh.getDirectoryFilesContents(stubs.directoryThatDoesNotExist)
+      .then((contents) => {
+        assert(contents instanceof Map, 'returned contents should be a Map');
+        assert(contents.entries().next().value === undefined, 'should not return contents of an empty directory')
+        done();
+      });
+    });
   });
 });
