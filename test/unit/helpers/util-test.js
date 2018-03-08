@@ -1,7 +1,7 @@
 const util = require('../../../helpers/util');
 const assert = require('assert');
 
-describe('util', () => {
+describe('helpers/util.js', () => {
   describe('.getFileNameFromVariableName(variableName)', () => {
     it('should get the correct included file name from variable name in template', () => {
 

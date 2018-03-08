@@ -5,8 +5,7 @@ var Promise = require('bluebird');
 const fs = Promise.promisifyAll(require('fs'));
 const stubs = require('../stubs');
 
-
-describe('file', () => {
+describe('helpers/file.js', () => {
  
   describe('.fileExists(path)', () => {
 
@@ -114,6 +113,99 @@ describe('file', () => {
       fh.deleteDirectory(stubs.directoryThatDoesNotExist)
       .then((success) => {
         assert(success === false);
+        done();
+      });
+    });
+  });
+
+  describe('.isFile(path)', () => {
+    it('should return true if path is a file', (done) => {
+      fh.isFile(stubs.fileThatExists)
+      .then((success) => {
+        assert(success === true);
+        done();
+      });
+    });
+
+    it('should return false if path is a directory', (done) => {
+      fh.isFile(stubs.emptyDirectoryThatExists)
+      .then((success) => {
+        assert(success === false);
+        done();
+      });
+    });
+
+    it('should return false if path does not exist', (done) => {
+      fh.isFile(stubs.fileThatDoesNotExist)
+      .then((success) => {
+        assert(success === false);
+        done();
+      });
+    });
+  });
+
+  describe('.isDirectory(path)', () => {
+    it('should return true if path is a directory', (done) => {
+      fh.isDirectory(stubs.emptyDirectoryThatExists)
+      .then((success) => {
+        assert(success === true);
+        done();
+      });
+    });
+
+    it('should return false if path is a file', (done) => {
+      fh.isDirectory(stubs.fileThatExists)
+      .then((success) => {
+        assert(success === false);
+        done();
+      });
+    });
+
+    it('should return false if path does not exist', (done) => {
+      fh.isFile(stubs.directoryThatDoesNotExist)
+      .then((success) => {
+        assert(success === false);
+        done();
+      });
+    });
+  });
+
+  // yield exports.copyFile(`${directoryPath}/${item}`, `${destination}/${directory}/${item}`, true);
+  describe('.copyFile(from, to, force', () => {
+    it('should copy an existing file to a destination file that does not yet exist', (done) => {
+      fh.copyFile(stubs.fileThatExists, stubs.fileThatDoesNotExist)
+      .then((success) => {
+        assert(success === true);
+        done();
+      });
+    });
+
+    it('should copy an existing file to a destination file that already exists when forced', (done) => {
+      fh.copyFile(stubs.fileThatExists, stubs.fileThatExists, true)
+      .then((success) => {
+        assert(success === true);
+        done();
+      });
+    });
+
+    it('should not copy an existing file to a destination file that already exists when not forced', (done) => {
+      fh.copyFile(stubs.fileThatExists, stubs.fileThatExists)
+      .then((success) => {
+        console.log(`Should not be here: ${success}`)
+      })
+      .catch(e => {
+        // TODO: Figure out why e == "reject method is undefined"
+        done();
+      });
+    });
+
+    it('should not copy a file that doesn not exist to any destination', (done) => {
+      fh.copyFile(stubs.fileThatDoesNotExist, stubs.fileThatExists)
+      .then((success) => {
+        console.log(`Should not be here: ${success}`)
+      })
+      .catch(e => {
+        // TODO: Figure out why e == "reject method is undefined"
         done();
       });
     });

@@ -9,8 +9,18 @@ exports.directoryWithContents = `with-contents`;
 exports.directoryThatDoesNotExist = `does-not-exist`;
 
 const statAsync = sinon.stub(fs, 'statAsync')
-statAsync.withArgs(exports.fileThatExists).resolves();
-statAsync.withArgs(exports.fileThatDoesNotExist).rejects();
+let statsIsFile = {
+  isFile: () => { return true; },
+  isDirectory: () => { return false; }
+};
+let statsIsDirectory = {
+  isFile: () => { return false; },
+  isDirectory: () => { return true; }
+};
+statAsync.withArgs(exports.fileThatExists).resolves(statsIsFile);
+statAsync.withArgs(exports.emptyDirectoryThatExists).resolves(statsIsDirectory);
+statAsync.withArgs(exports.fileThatDoesNotExist).rejects(undefined);
+statAsync.withArgs(exports.directoryThatDoesNotExist).rejects(undefined);
 exports.statAsync = statAsync
 
 const mkdirAsync = sinon.stub(fs, 'mkdirAsync')

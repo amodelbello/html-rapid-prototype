@@ -63,7 +63,8 @@ exports.deleteDirectory = (path) => {
 }
 
 exports.isFile = (path) => {
-  return fs.statAsync(path).then((stats) => {
+  return fs.statAsync(path)
+  .then((stats) => {
     if (stats != undefined && stats.isFile()) {
       return true;
     } else {
@@ -75,32 +76,48 @@ exports.isFile = (path) => {
   });
 }
 
-exports.isDirectory = (path, data = '') => {
-  return new Promise((resolve, reject) => {
-    fs.stat(path, (err, stats) => {
-      if (err) return reject(err);
-      if (stats != undefined && stats.isDirectory()) {
-        return resolve(true);
-      } else {
-        return resolve(false);
-      }
-    });
+exports.isDirectory = (path) => {
+  return fs.statAsync(path)
+  .then((stats) => {
+    if (stats != undefined && stats.isDirectory()) {
+      return true;
+    } else {
+      return false;
+    }
+  })
+  .catch(e => {
+    return false;
   });
 }
 
-exports.copyFile = (from, to) => {
-  let read = fs.createReadStream(from);
-  let write = fs.createWriteStream(to);
-  return new Promise(function(resolve, reject) {
-    read.on('error', reject);
-    write.on('error', reject);
-    write.on('finish', resolve);
-    read.pipe(write);
-  }).catch((e) => {
-    read.destroy();
-    write.end();
-    logger.error();
-    reject(`Could not copy file: ${e}`);
+exports.copyFile = (from, to, force = false) => {
+  return new Promise((resolve, reject) => {
+    util.async(function*() {
+      try {
+        let fromFileExists = yield exports.isFile(from);
+        let toFileExists = yield exports.isFile(to);
+        if (fromFileExists) {
+          let content = yield exports.getFileContents(from);
+          if (toFileExists) {
+            if (!force) {
+              throw `Destination file ${to} already exists.`;
+            }
+          } else {
+            yield exports.createFile(to);
+          }
+          yield exports.writeToFile(to, content);
+          return resolve(true);
+        } else {
+          throw `Cannot copy from ${from} because it does not exist.`;
+        }
+      }
+      catch(e) {
+        return reject(`Could not copy file: ${e}`);
+      }
+    });
+  })
+  .catch(e => {
+    reject(e);
   });
 }
 
@@ -179,12 +196,24 @@ exports.getDirectoryFiles = (path) => {
 }
 
 exports.getFileContents = (path) => {
-  return new Promise((resolve, reject) => {
-    fs.readFile(path, (err, data) => {
-      if (err || data == undefined) reject(err);
-      resolve(data.toString());
+    return fs.readFileAsync(path)
+    .then((data) => {
+      return data.toString();
+    })
+    .catch(e => {
+      return false;
     });
+}
+
+exports.writeToFile = (path, content) => {
+  return fs.writeFileAsync(path, content)
+  .then(() => {
+    return true;
+  })
+  .catch(e => {
+    return false;
   });
+
 }
 
 exports.copyDirectoryRecursive = (directoryPath, destination, force = false) => {
@@ -195,7 +224,7 @@ exports.copyDirectoryRecursive = (directoryPath, destination, force = false) => 
         let destinationExists = yield exports.fileExists(`${destination}/${directory}`);
         if (destinationExists) {
           if (!force) {
-            reject("Destination directory already exists!")
+            reject(`Destination directory ${destination}/${directory} already exists`)
           }
           yield exports.deleteDirectoryRecursive(to);
         }
@@ -207,7 +236,7 @@ exports.copyDirectoryRecursive = (directoryPath, destination, force = false) => 
           let isFile = yield exports.isFile(`${directoryPath}/${item}`);
           if (isFile) {
             yield exports.createFile(`${destination}/${directory}/${item}`);
-            yield exports.copyFile(`${directoryPath}/${item}`, `${destination}/${directory}/${item}`);
+            yield exports.copyFile(`${directoryPath}/${item}`, `${destination}/${directory}/${item}`, true);
           } else {
             yield exports.copyDirectoryRecursive(`${directoryPath}/${item}`, `${destination}/${directory}`);
           }

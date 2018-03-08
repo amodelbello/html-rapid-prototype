@@ -1,3 +1,4 @@
+// TODO: I think we can do without tracer at this point
 const logger = require('tracer').colorConsole();
 const fh = require('../helpers/file');
 const util = require('../helpers/util')
@@ -83,8 +84,7 @@ function buildContent(file) {
         return resolve(content);
       }
       catch(e) {
-        logger.error();
-        reject(`Unable to build content: ${e}`);
+        console.log(`Unable to build content: ${e}`);
       }
     });
   });
