@@ -29,16 +29,17 @@ exports.run = () => {
     });
   }
 
+  // TODO: should write a test for this
   if (cli.arguments.watch) {
     const watch_task = require('./tasks/watch');
     const build_task = require('./tasks/build');
 
     build_task.build()
+    .then(() => watch_task.watchForChanges())
     .catch(e => {
       console.log(`Unable to watch for changes: ${e}`);
       console.log('Exiting...');
       process.exit(1);
-    })
-    .then(() => watch_task.watchForChanges());
+    });
   }
 };

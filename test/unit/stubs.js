@@ -11,7 +11,7 @@ exports.directoryWithOnlyDirectories = `with-only-directories`;
 exports.directoryThatDoesNotExist = `does-not-exist`;
 exports.testContent = `This is some test content :)`;
 
-const statAsync = sinon.stub(fs, 'statAsync')
+const statAsync = sinon.stub(fs, 'statAsync');
 let statsIsFile = {
   isFile: () => { return true; },
   isDirectory: () => { return false; }
@@ -35,18 +35,40 @@ statAsync.withArgs(exports.fileThatDoesNotExist).rejects(undefined);
 statAsync.withArgs(exports.directoryThatDoesNotExist).rejects(undefined);
 statAsync.withArgs(`${exports.directoryThatDoesNotExist}/${exports.directoryWithOnlyFiles}`).rejects(undefined);
 statAsync.withArgs(`${exports.directoryThatDoesNotExist}/${exports.directoryWithOnlyFiles}/${exports.fileThatExists}`).rejects(undefined);
+statAsync.callThrough();
+
+existsSync = sinon.stub(fs, 'existsSync');
+existsSync.withArgs(exports.fileThatExists).returns(true);
+existsSync.withArgs(`${exports.directoryWithContents}/${exports.fileThatExists}`).returns(true);
+existsSync.withArgs(`${exports.directoryWithContents}/${exports.directoryWithContents}`).returns(true);
+existsSync.withArgs(`${exports.directoryWithContents}/${exports.directoryWithOnlyFiles}`).returns(true);
+existsSync.withArgs(`${exports.directoryWithContents}/${exports.directoryWithOnlyFiles}/${exports.fileThatExists}`).returns(true);
+existsSync.withArgs(`${exports.directoryWithOnlyFiles}`).returns(true);
+existsSync.withArgs(`${exports.directoryWithOnlyFiles}/${exports.fileThatExists}`).returns(true);
+existsSync.withArgs(`${exports.directoryWithOnlyDirectories}/${exports.directoryWithOnlyDirectories}`).returns(true);
+existsSync.withArgs(`${exports.directoryWithOnlyDirectories}/${exports.directoryWithContents}`).returns(true);
+existsSync.withArgs(`${exports.directoryWithOnlyDirectories}/${exports.directoryWithOnlyFiles}`).returns(true);
+existsSync.withArgs(exports.emptyDirectoryThatExists).returns(true);
+existsSync.withArgs(exports.fileThatDoesNotExist).returns(false);
+existsSync.withArgs(exports.directoryThatDoesNotExist).returns(false);
+existsSync.withArgs(`${exports.directoryThatDoesNotExist}/${exports.directoryWithOnlyFiles}`).returns(false);
+existsSync.withArgs(`${exports.directoryThatDoesNotExist}/${exports.directoryWithOnlyFiles}/${exports.fileThatExists}`).returns(false);
+existsSync.callThrough();
+
 
 const mkdirAsync = sinon.stub(fs, 'mkdirAsync')
 mkdirAsync.withArgs(exports.directoryThatDoesNotExist).resolves();
 mkdirAsync.withArgs(`${exports.directoryThatDoesNotExist}/${exports.directoryWithOnlyFiles}`).resolves();
 mkdirAsync.withArgs(`${exports.directoryWithContents}/${exports.directoryWithOnlyFiles}`).resolves();
 mkdirAsync.withArgs(exports.emptyDirectoryThatExists).rejects();
+mkdirAsync.callThrough();
 
 const unlinkAsync = sinon.stub(fs, 'unlinkAsync');
 unlinkAsync.withArgs(exports.fileThatExists).resolves();
 unlinkAsync.withArgs(`${exports.directoryWithOnlyFiles}/${exports.fileThatExists}`).resolves();
 unlinkAsync.withArgs(`${exports.directoryWithContents}/${exports.directoryWithOnlyFiles}/${exports.fileThatExists}`).resolves();
 unlinkAsync.withArgs(exports.fileThatDoesNotExist).rejects();
+unlinkAsync.callThrough();
 
 const rmdirAsync = sinon.stub(fs, 'rmdirAsync');
 rmdirAsync.withArgs(exports.emptyDirectoryThatExists).resolves();
@@ -56,6 +78,7 @@ rmdirAsync.withArgs(`${exports.directoryWithContents}/${exports.directoryWithOnl
 rmdirAsync.withArgs(exports.directoryWithContents).rejects();
 rmdirAsync.withArgs(exports.directoryThatDoesNotExist).rejects();
 rmdirAsync.withArgs(exports.fileThatExists).rejects();
+rmdirAsync.callThrough();
 
 const readdirAsync = sinon.stub(fs, 'readdirAsync');
 readdirAsync.withArgs(exports.directoryWithContents).resolves([]);
@@ -75,6 +98,7 @@ readdirAsync.withArgs(exports.directoryWithContents + '2').resolves();
 readdirAsync.withArgs(exports.emptyDirectoryThatExists).rejects();
 readdirAsync.withArgs(exports.fileThatExists).rejects();
 readdirAsync.withArgs(exports.directoryThatDoesNotExist).rejects();
+readdirAsync.callThrough();
 
 const readFileAsync = sinon.stub(fs, 'readFileAsync');
 readFileAsync.withArgs(`${exports.directoryWithContents}/${exports.fileThatExists}`).resolves(exports.testContent);
@@ -83,6 +107,7 @@ readFileAsync.withArgs(`${exports.fileThatExists}`).resolves(exports.testContent
 readFileAsync.withArgs(exports.fileThatDoesNotExist).rejects();
 readFileAsync.withArgs(exports.directoryWithContents).rejects();
 readFileAsync.withArgs(exports.directoryThatDoesNotExist).rejects();
+readFileAsync.callThrough();
 
 const writeFileAsync = sinon.stub(fs, 'writeFileAsync');
 writeFileAsync.withArgs(exports.fileThatExists, exports.testContent).resolves();
@@ -92,3 +117,4 @@ writeFileAsync.withArgs(`${exports.directoryThatDoesNotExist}/${exports.director
 writeFileAsync.withArgs(`${exports.directoryWithContents}/${exports.directoryWithOnlyFiles}/${exports.fileThatExists}`, exports.testContent).resolves();
 writeFileAsync.withArgs(exports.fileThatDoesNotExist, exports.testContent).resolves();
 writeFileAsync.withArgs(exports.directoryWithContents, exports.testContent).rejects()
+writeFileAsync.callThrough();

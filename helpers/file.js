@@ -1,16 +1,16 @@
 const util = require('../helpers/util')
 var Promise = require('bluebird');
 var fs = Promise.promisifyAll(require('fs'));
-// const fs = require('fs');
 
-
-// FIXME: Using fs.stat() to check for the existence of a file before calling fs.open(), fs.readFile() or fs.writeFile() is not recommended. Instead, user code should open/read/write the file directly and handle the error raised if the file is not available.
 exports.fileExists = (path) => {
-  return fs.statAsync(path).then((stats) => {
-    return true;
-  })
-  .catch(e => {
-    return false;
+  return new Promise((resolve, reject) => {
+    // have to use existsSync because exists is deprecated
+    let exists = fs.existsSync(path);
+    if (!exists) {
+      resolve(false);
+    }
+
+    resolve(true);
   });
 }
 

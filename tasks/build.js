@@ -117,8 +117,6 @@ exports.build = () => {
           return reject(`Unable to build file: ${e}`);
         }
       });
-
-      return resolve();
     })
   })
 
