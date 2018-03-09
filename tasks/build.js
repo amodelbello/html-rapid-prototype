@@ -1,4 +1,3 @@
-const logger = require('tracer').colorConsole();
 const fh = require('../helpers/file');
 const util = require('../helpers/util')
 const config = require('../config/config');
@@ -83,8 +82,7 @@ function buildContent(file) {
         return resolve(content);
       }
       catch(e) {
-        logger.error();
-        reject(`Unable to build content: ${e}`);
+        console.log(`Unable to build content: ${e}`);
       }
     });
   });
@@ -125,7 +123,6 @@ exports.build = () => {
   })
 
   .catch(e => {
-    logger.error();
     let message = `Problem getting directory files: ${e}`;
     throw message;
   });

@@ -1,4 +1,16 @@
-const logger = require('tracer').colorConsole();
+
+function isPromise(possiblePromise) {
+  // After adding bluebird using instanceof Promise no longer works
+  if (possiblePromise === undefined) {
+    return false;
+  }
+
+  if (typeof possiblePromise.then !== 'function') {
+    return false;
+  }
+
+  return true;
+}
 
 // TODO: Make variable delimeters configurable
 exports.getFileNameFromVariableName = (variableName) => {
@@ -19,7 +31,7 @@ exports.async = (generator) => {
 
     const iteratorValue = iteratorResult.value;
 
-    if (iteratorValue instanceof Promise) {
+    if (isPromise(iteratorValue)) {
       iteratorValue
         .then(res => handle(iterator.next(res)))
         .catch(e => {
@@ -32,7 +44,6 @@ exports.async = (generator) => {
     handle(iterator.next());
   }
   catch (e) { 
-    logger.error();
     iterator.throw(e); 
   }
 }
