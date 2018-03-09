@@ -5,7 +5,7 @@ var fs = Promise.promisifyAll(require('fs'));
 // const fs = require('fs');
 
 
-// TODO: Using fs.stat() to check for the existence of a file before calling fs.open(), fs.readFile() or fs.writeFile() is not recommended. Instead, user code should open/read/write the file directly and handle the error raised if the file is not available.
+// FIXME: Using fs.stat() to check for the existence of a file before calling fs.open(), fs.readFile() or fs.writeFile() is not recommended. Instead, user code should open/read/write the file directly and handle the error raised if the file is not available.
 exports.fileExists = (path) => {
   return fs.statAsync(path).then((stats) => {
     return true;
@@ -24,6 +24,7 @@ exports.createDirectory = (path) => {
   });
 }
 
+// TODO: this looks pretty much like a duplicate of exports.writeToFile
 exports.createFile = (path, content) => {
 
   return exports.fileExists(path)
@@ -102,8 +103,6 @@ exports.copyFile = (from, to, force = false) => {
             if (!force) {
               throw `Destination file ${to} already exists.`;
             }
-          } else {
-            yield exports.createFile(to);
           }
           yield exports.writeToFile(to, content);
           return resolve(true);
@@ -167,7 +166,6 @@ exports.getDirectoryFilesContents = (path) => {
   });
 }
 
-// TODO: study this, can it be simplified?
 exports.getDirectoryFiles = (path) => {
   return new Promise((resolve, reject) => {
     exports.getDirectoryContents(path)
@@ -196,8 +194,7 @@ exports.getDirectoryFiles = (path) => {
       return resolve(files);
     })
     .catch(e => {
-      logger.error();
-      reject(`Unable to get directory files from ${path}: ${e}`);
+      reject(`${e}`);
     });
   });
 }
@@ -233,7 +230,7 @@ exports.copyDirectoryRecursive = (directoryPath, destination, force = false) => 
           if (!force) {
             reject(`Destination directory ${destination}/${directory} already exists`)
           }
-          yield exports.deleteDirectoryRecursive(to);
+          yield exports.deleteDirectoryRecursive(`${destination}/${directory}`);
         }
 
         yield exports.createDirectory(`${destination}/${directory}`);
@@ -242,14 +239,13 @@ exports.copyDirectoryRecursive = (directoryPath, destination, force = false) => 
         for (let item of contents) {
           let isFile = yield exports.isFile(`${directoryPath}/${item}`);
           if (isFile) {
-            yield exports.createFile(`${destination}/${directory}/${item}`);
             yield exports.copyFile(`${directoryPath}/${item}`, `${destination}/${directory}/${item}`, true);
           } else {
             yield exports.copyDirectoryRecursive(`${directoryPath}/${item}`, `${destination}/${directory}`);
           }
         }
 
-        return resolve();
+        return resolve(true);
       }
       catch(e) {
         return reject();
@@ -264,25 +260,32 @@ exports.deleteDirectoryRecursive = (path) => {
       try {
         let exists = yield exports.fileExists(path);
         if (!exists) {
-          return resolve();
+          return resolve(true);
+        }
+        let isDirectory = yield exports.isDirectory(path);
+        if (!isDirectory) {
+          return reject();
         }
         let contents = yield exports.getDirectoryContents(path);
-        for (let item of contents) {
-          let isFile = yield exports.isFile(`${path}/${item}`);
-          if (isFile) {
-            yield exports.deleteFile(`${path}/${item}`);
-          } else {
-            let directoryContents = yield exports.getDirectoryContents(`${path}/${item}`);
-            if (!directoryContents.length) {
-              yield exports.deleteDirectory(`${path}/${item}`);
+        if(Array.isArray(contents)) {
+          for (let item of contents) {
+            let isFile = yield exports.isFile(`${path}/${item}`);
+            if (isFile) {
+              yield exports.deleteFile(`${path}/${item}`);
             } else {
-              yield exports.deleteDirectoryRecursive(`${path}/${item}`);
+              let directoryContents = yield exports.getDirectoryContents(`${path}/${item}`);
+              if (!directoryContents.length) {
+                yield exports.deleteDirectory(`${path}/${item}`);
+              } else {
+                yield exports.deleteDirectoryRecursive(`${path}/${item}`);
+              }
             }
           }
         }
+
         yield exports.deleteDirectory(`${path}`);
 
-        return resolve();
+        return resolve(true);
       }
       catch(e) {
         return reject(`Unable to recursively delete contents of directory ${path}: ${e}`);
