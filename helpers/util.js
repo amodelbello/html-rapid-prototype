@@ -1,4 +1,3 @@
-const logger = require('tracer').colorConsole();
 
 function isPromise(possiblePromise) {
   // After adding bluebird using instanceof Promise no longer works

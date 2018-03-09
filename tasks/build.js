@@ -1,5 +1,3 @@
-// TODO: I think we can do without tracer at this point
-const logger = require('tracer').colorConsole();
 const fh = require('../helpers/file');
 const util = require('../helpers/util')
 const config = require('../config/config');
@@ -125,7 +123,6 @@ exports.build = () => {
   })
 
   .catch(e => {
-    logger.error();
     let message = `Problem getting directory files: ${e}`;
     throw message;
   });

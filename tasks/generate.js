@@ -1,4 +1,3 @@
-const logger = require('tracer').colorConsole();
 const cli = require('../helpers/cli');
 const config = require('../config/config');
 const fh = require('../helpers/file');

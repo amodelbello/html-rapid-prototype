@@ -27,7 +27,6 @@
   "dependencies": {
     "bluebird": "^3.5.1",
     "node-watch": "^0.5.7",
-    "tracer": "^0.8.12",
     "yargs": "^11.0.0"
   },
   "devDependencies": {

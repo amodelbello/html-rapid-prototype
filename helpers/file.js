@@ -1,5 +1,4 @@
 const util = require('../helpers/util')
-const logger = require('tracer').colorConsole();
 var Promise = require('bluebird');
 var fs = Promise.promisifyAll(require('fs'));
 // const fs = require('fs');
@@ -160,7 +159,6 @@ exports.getDirectoryFilesContents = (path) => {
       return resolve(filesContents);
     })
     .catch(e => {
-      logger.error();
       reject(`Unable to get directory files contents from ${path}: ${e}`);
     });
   });
