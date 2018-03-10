@@ -1,3 +1,6 @@
+// TODO: Make it possible to have more than one layout
+// TODO: Make it possible to include partials in content files
+
 const cli = require('./helpers/cli');
 
 exports.run = () => {
