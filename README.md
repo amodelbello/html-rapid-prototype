@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/amodelbello/html-rapid-prototype.svg?branch=master)](https://travis-ci.org/amodelbello/html-rapid-prototype)
+
 # html-rapid-prototype
 Template system for static html files to make prototype iterations fast and easy
 
